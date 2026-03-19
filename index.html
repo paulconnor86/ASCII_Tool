@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ASCII CAM</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap');
@@ -13,13 +13,12 @@
     --ink-mid:    #6b6560;
     --ink-dim:    #b0aaa3;
     --accent:     #AAFF00;
-    --panel:      #efecea;
     --border:     #ddd9d3;
     --screen-bg:  #1a1814;
     --screen-char:#e8e2d9;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
     background: var(--bg);
@@ -27,34 +26,37 @@
     font-family: 'DM Mono', monospace;
     font-weight: 300;
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
   /* ── Header ── */
   header {
     width: 100%;
-    padding: 2.5rem 2.5rem 2rem;
+    padding: 1.8rem 1.5rem 1.4rem;
+    padding-top: max(1.8rem, env(safe-area-inset-top));
     display: flex;
     align-items: flex-end;
-    gap: 2rem;
+    gap: 1rem;
     border-bottom: 1px solid var(--border);
   }
   .header-left { display: flex; flex-direction: column; gap: 0.3rem; }
   h1 {
     font-family: 'DM Mono', monospace;
     font-weight: 300;
-    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-size: clamp(1.4rem, 6vw, 2.6rem);
     letter-spacing: -0.02em;
     line-height: 1;
     color: var(--ink);
   }
-  h1 span { color: var(--ink); }
   .subtitle {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: var(--ink-dim);
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     font-weight: 400;
   }
@@ -67,24 +69,25 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ink-dim);
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.2rem;
+    white-space: nowrap;
   }
   .dot {
     width: 6px; height: 6px;
     border-radius: 50%;
     background: var(--border);
+    flex-shrink: 0;
     transition: background 0.4s;
   }
   .dot.live { background: var(--accent); animation: pulse 2.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* ── Source tabs ── */
+  /* ── Tabs ── */
   .source-tabs {
     width: 100%;
     max-width: 1100px;
     display: flex;
-    gap: 0;
-    padding: 1.4rem 2.5rem 0;
+    padding: 1.2rem 1.5rem 0;
   }
   .tab {
     font-family: 'DM Mono', monospace;
@@ -92,7 +95,9 @@
     font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 0.5rem 1.2rem;
+    padding: 0.55rem 1.2rem;
+    min-height: 44px;
+    display: flex; align-items: center;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--ink-mid);
@@ -100,33 +105,29 @@
     transition: all 0.15s;
     margin-right: -1px;
     position: relative;
+    -webkit-appearance: none;
+    border-radius: 0;
   }
-  .tab:hover { color: var(--ink); }
-  .tab.active {
-    background: var(--accent);
-    color: var(--ink);
-    border-color: var(--accent);
-    z-index: 1;
-  }
+  .tab.active { background: var(--accent); color: var(--ink); border-color: var(--accent); z-index: 1; }
 
   /* ── Main ── */
   main {
     width: 100%;
     max-width: 1100px;
-    padding: 1.4rem 2.5rem 3rem;
+    padding: 1.2rem 1.5rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: 1.2rem;
   }
 
-  /* ── Controls bar ── */
+  /* ── Controls ── */
   .controls {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 1.8rem;
+    gap: 1.4rem;
     align-items: flex-end;
-    padding-bottom: 1.2rem;
+    padding-bottom: 1.1rem;
     border-bottom: 1px solid var(--border);
   }
   .control-group {
@@ -134,38 +135,33 @@
     flex-direction: column;
     gap: 0.45rem;
     font-size: 0.58rem;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ink-mid);
   }
-  .control-group label {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .range-val {
-    font-size: 0.65rem;
-    color: var(--ink);
-    letter-spacing: 0;
-    font-weight: 400;
-  }
+  .control-group label { display: flex; justify-content: space-between; align-items: baseline; }
+  .range-val { font-size: 0.65rem; color: var(--ink); letter-spacing: 0; font-weight: 400; }
   input[type=range] {
     -webkit-appearance: none;
     height: 1px;
     background: var(--border);
     outline: none;
-    width: 100px;
+    width: 90px;
     cursor: pointer;
+    padding: 10px 0;
+    margin: -10px 0;
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 10px; height: 10px;
+    width: 20px; height: 20px;
     background: var(--ink);
     border-radius: 50%;
     transition: background 0.2s;
   }
-  input[type=range]:hover::-webkit-slider-thumb { background: var(--accent); }
+  input[type=range]:active::-webkit-slider-thumb { background: var(--accent); }
+
   .row { flex-direction: row; align-items: center; gap: 0.6rem; }
+
   select {
     background: transparent;
     border: none;
@@ -175,24 +171,23 @@
     font-size: 0.65rem;
     font-weight: 300;
     padding: 0.2rem 1rem 0.2rem 0.1rem;
-    letter-spacing: 0.05em;
     outline: none;
     cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
+    appearance: none; -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b6560'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0 center;
     background-size: 8px;
+    min-height: 32px;
   }
 
   /* Toggle */
   .toggle-wrap { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
   input[type=checkbox] { display: none; }
   .toggle {
-    width: 28px; height: 14px;
+    width: 36px; height: 20px;
     background: var(--border);
-    border-radius: 7px;
+    border-radius: 10px;
     border: 1px solid var(--ink-dim);
     position: relative;
     transition: background 0.2s, border-color 0.2s;
@@ -203,52 +198,51 @@
     content: '';
     position: absolute;
     left: 2px; top: 2px;
-    width: 8px; height: 8px;
+    width: 14px; height: 14px;
     border-radius: 50%;
     background: #fff;
     transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   }
   input[type=checkbox]:checked + .toggle { background: var(--accent); border-color: var(--accent); }
-  input[type=checkbox]:checked + .toggle::after { transform: translateX(14px); }
+  input[type=checkbox]:checked + .toggle::after { transform: translateX(16px); }
 
   /* Buttons */
   .btn {
     font-family: 'DM Mono', monospace;
     font-size: 0.6rem;
     font-weight: 400;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    padding: 0.5rem 1.1rem;
+    padding: 0.55rem 1.1rem;
+    min-height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
     border: 1px solid var(--accent);
     background: var(--accent);
     color: var(--ink);
     cursor: pointer;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
     white-space: nowrap;
+    -webkit-appearance: none;
+    border-radius: 0;
   }
-  .btn:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
-  .btn:active { opacity: 0.7; }
-  .btn.secondary {
-    background: transparent;
-    border-color: var(--border);
-    color: var(--ink-mid);
-  }
-  .btn.secondary:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+  .btn:active { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+  .btn.secondary { background: transparent; border-color: var(--border); color: var(--ink-mid); }
+  .btn.secondary:active { background: var(--ink); color: var(--accent); border-color: var(--ink); }
   .btn.danger { border-color: var(--border); background: transparent; color: var(--ink-mid); }
-  .btn.danger:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
-  .btn.recording {
-    background: var(--ink);
-    color: var(--accent);
-    border-color: var(--ink);
-    animation: rec-pulse 1.2s ease-in-out infinite;
-  }
+  .btn.danger:active { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+  .btn.recording { background: var(--ink); color: var(--accent); border-color: var(--ink); animation: rec-pulse 1.2s ease-in-out infinite; }
   @keyframes rec-pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .btn:disabled { opacity: 0.35; pointer-events: none; }
+  @media (hover: hover) {
+    .btn:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+    .btn.secondary:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+    .btn.danger:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+  }
 
-  .controls-right { margin-left: auto; display: flex; align-items: flex-end; gap: 0.6rem; }
+  .controls-right { margin-left: auto; display: flex; align-items: flex-end; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
 
-  /* ── Upload drop zone ── */
+  /* ── Upload zone ── */
   .upload-zone {
     width: 100%;
     border: 1px dashed var(--border);
@@ -257,34 +251,18 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    padding: 3.5rem 2rem;
+    padding: 3rem 1.5rem;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
     text-align: center;
   }
-  .upload-zone:hover, .upload-zone.drag-over {
-    border-color: var(--accent);
-    background: rgba(170,255,0,0.04);
-  }
-  .upload-icon {
-    font-size: 2.2rem;
-    opacity: 0.35;
-    line-height: 1;
-  }
-  .upload-zone p {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-mid);
-    line-height: 2;
-  }
-  .upload-zone p strong {
-    color: var(--ink);
-    font-weight: 400;
-  }
+  .upload-zone.drag-over { border-color: var(--accent); background: rgba(170,255,0,0.04); }
+  .upload-icon { font-size: 2rem; opacity: 0.35; line-height: 1; }
+  .upload-zone p { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid); line-height: 2; }
+  .upload-zone p strong { color: var(--ink); font-weight: 400; }
   input[type=file] { display: none; }
 
-  /* Video playback controls (upload mode) */
+  /* Video scrubber */
   .video-controls {
     display: flex;
     align-items: center;
@@ -293,9 +271,10 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-mid);
+    flex-wrap: wrap;
   }
-  .video-controls input[type=range] { width: 140px; }
-  .video-controls .time { font-size: 0.6rem; color: var(--ink); min-width: 7ch; }
+  .video-controls input[type=range] { width: 120px; padding: 12px 0; margin: -12px 0; }
+  .time { font-size: 0.6rem; color: var(--ink); min-width: 7ch; }
 
   /* ── Screen ── */
   .screen {
@@ -306,12 +285,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 220px;
+    min-height: 200px;
   }
   .screen.flash::after {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: #fff;
     animation: flash 0.25s ease-out forwards;
     pointer-events: none;
@@ -327,6 +305,8 @@
     white-space: pre;
     padding: 0.6rem;
     display: block;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   /* ── Placeholder ── */
@@ -335,64 +315,47 @@
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    padding: 4rem 2rem;
+    padding: 3.5rem 1.5rem;
     color: var(--ink-dim);
     text-align: center;
   }
-  .placeholder-mark { font-size: 4rem; font-weight: 300; line-height: 1; color: #3a3530; opacity: 0.6; }
-  .placeholder p { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; line-height: 2; color: #5a5450; }
+  .placeholder-mark { font-size: 3.5rem; line-height: 1; color: #3a3530; opacity: 0.6; }
+  .placeholder p { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; line-height: 2; color: #5a5450; }
   #start-btn-big {
     font-family: 'DM Mono', monospace;
     font-size: 0.65rem;
     font-weight: 400;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    padding: 0.75rem 2.2rem;
+    padding: 0.75rem 2rem;
+    min-height: 48px;
     border: 1px solid var(--accent);
     background: var(--accent);
     color: #000;
     cursor: pointer;
+    -webkit-appearance: none;
+    border-radius: 0;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  #start-btn-big:hover { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+  #start-btn-big:active { background: var(--ink); color: var(--accent); border-color: var(--ink); }
 
-  /* Progress bar for video export */
-  .export-progress {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.8rem 0 0.2rem;
-  }
-  .export-progress-label {
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--ink-mid);
-    display: flex;
-    justify-content: space-between;
-  }
-  .progress-bar-track {
-    width: 100%;
-    height: 2px;
-    background: var(--border);
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    width: 0%;
-    transition: width 0.1s linear;
-  }
+  /* Progress */
+  .export-progress { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; padding: 0.4rem 0 0; }
+  .export-progress-label { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mid); display: flex; justify-content: space-between; }
+  .progress-bar-track { width: 100%; height: 2px; background: var(--border); }
+  .progress-bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.1s linear; }
+  .encoding-note { font-size: 0.56rem; letter-spacing: 0.12em; color: var(--ink-dim); text-transform: uppercase; text-align: center; padding-top: 0.3rem; }
 
   video, canvas { display: none; }
 
   footer {
     font-size: 0.55rem;
     color: var(--ink-dim);
-    letter-spacing: 0.18em;
-    padding-bottom: 2rem;
+    letter-spacing: 0.15em;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
     text-transform: uppercase;
     opacity: 0.6;
+    text-align: center;
   }
 </style>
 </head>
@@ -400,8 +363,8 @@
 
 <header>
   <div class="header-left">
-    <h1>ascii<span>cam</span></h1>
-    <div class="subtitle">Webcam → character art · runs locally</div>
+    <h1>asciicam</h1>
+    <div class="subtitle">Character art · runs locally</div>
   </div>
   <div class="status-dot">
     <div class="dot" id="status-dot"></div>
@@ -409,18 +372,16 @@
   </div>
 </header>
 
-<!-- Source mode tabs -->
 <div class="source-tabs">
   <button class="tab active" data-mode="webcam">Webcam</button>
   <button class="tab" data-mode="upload">Upload</button>
 </div>
 
 <main>
-  <!-- ── Controls (shared) ── -->
   <div class="controls" id="controls" style="display:none">
     <div class="control-group">
-      <label>Resolution <span class="range-val" id="res-val">80</span></label>
-      <input type="range" id="res-range" min="20" max="180" value="80" step="5">
+      <label>Resolution <span class="range-val" id="res-val">60</span></label>
+      <input type="range" id="res-range" min="20" max="140" value="60" step="5">
     </div>
     <div class="control-group">
       <label>Contrast <span class="range-val" id="con-val">1.0</span></label>
@@ -454,39 +415,33 @@
       </label>
       <span>Invert</span>
     </div>
-    <div class="controls-right" id="controls-right">
-      <!-- populated per mode -->
-    </div>
+    <div class="controls-right" id="controls-right"></div>
   </div>
 
-  <!-- Video scrubber (upload video mode only) -->
   <div class="video-controls" id="video-controls" style="display:none">
     <button class="btn secondary" id="playpause-btn">Pause</button>
-    <input type="range" id="scrubber" min="0" max="1000" value="0" step="1">
+    <input type="range" id="scrubber" min="0" max="1000" value="0">
     <span class="time" id="time-display">0:00 / 0:00</span>
   </div>
 
-  <!-- Export progress -->
   <div class="export-progress" id="export-progress" style="display:none">
     <div class="export-progress-label">
-      <span>Exporting video</span>
+      <span id="export-label">Exporting</span>
       <span id="export-pct">0%</span>
     </div>
     <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <div class="encoding-note" id="encoding-note" style="display:none">Encoding GIF — this may take a moment</div>
   </div>
 
-  <!-- ── Screen ── -->
   <div class="screen" id="screen">
-    <!-- Webcam placeholder -->
     <div class="placeholder" id="webcam-placeholder">
       <div class="placeholder-mark">◎</div>
       <p>Camera not active<br>Grant access to begin</p>
       <button id="start-btn-big">Start camera</button>
     </div>
-    <!-- Upload placeholder -->
     <div class="upload-zone" id="upload-zone" style="display:none">
       <div class="upload-icon">↑</div>
-      <p><strong>Drop an image or video here</strong><br>or click to browse<br>JPG · PNG · GIF · MP4 · WEBM · MOV</p>
+      <p><strong>Tap to choose a file</strong><br>or drop here on desktop<br>JPG · PNG · MP4 · MOV</p>
       <button class="btn" id="browse-btn">Browse files</button>
       <input type="file" id="file-input" accept="image/*,video/*">
     </div>
@@ -496,43 +451,50 @@
 
 <footer>No data leaves your device</footer>
 
-<!-- Hidden media elements -->
 <video id="webcam-video" autoplay playsinline muted></video>
 <video id="upload-video" playsinline muted></video>
 <canvas id="canvas"></canvas>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 <script>
-// ── Element refs ──
-const webcamVideo  = document.getElementById('webcam-video');
-const uploadVideo  = document.getElementById('upload-video');
-const canvas       = document.getElementById('canvas');
-const ctx          = canvas.getContext('2d', { willReadFrequently: true });
-const out          = document.getElementById('ascii-out');
-const screen       = document.getElementById('screen');
-const dot          = document.getElementById('status-dot');
-const statusLabel  = document.getElementById('status-label');
-const controlsEl   = document.getElementById('controls');
-const controlsRight= document.getElementById('controls-right');
-const webcamPh     = document.getElementById('webcam-placeholder');
-const uploadZone   = document.getElementById('upload-zone');
-const videoControls= document.getElementById('video-controls');
-const exportProgress=document.getElementById('export-progress');
-const progressFill = document.getElementById('progress-fill');
-const exportPct    = document.getElementById('export-pct');
+// ── Feature detection ──
+const CAN_MEDIARECORDER = (typeof MediaRecorder !== 'undefined') &&
+  (MediaRecorder.isTypeSupported('video/webm') || MediaRecorder.isTypeSupported('video/webm;codecs=vp9'));
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-const resRange   = document.getElementById('res-range');
-const conRange   = document.getElementById('con-range');
-const briRange   = document.getElementById('bri-range');
-const resVal     = document.getElementById('res-val');
-const conVal     = document.getElementById('con-val');
-const briVal     = document.getElementById('bri-val');
-const charsetSel = document.getElementById('charset-sel');
-const mirrorChk  = document.getElementById('mirror-chk');
-const invertChk  = document.getElementById('invert-chk');
-const scrubber   = document.getElementById('scrubber');
-const timeDisplay= document.getElementById('time-display');
-const playpauseBtn=document.getElementById('playpause-btn');
+// ── Refs ──
+const webcamVideo   = document.getElementById('webcam-video');
+const uploadVideo   = document.getElementById('upload-video');
+const canvas        = document.getElementById('canvas');
+const ctx           = canvas.getContext('2d', { willReadFrequently: true });
+const out           = document.getElementById('ascii-out');
+const screenEl      = document.getElementById('screen');
+const dot           = document.getElementById('status-dot');
+const statusLabel   = document.getElementById('status-label');
+const controlsEl    = document.getElementById('controls');
+const controlsRight = document.getElementById('controls-right');
+const webcamPh      = document.getElementById('webcam-placeholder');
+const uploadZone    = document.getElementById('upload-zone');
+const videoControls = document.getElementById('video-controls');
+const exportProgress= document.getElementById('export-progress');
+const progressFill  = document.getElementById('progress-fill');
+const exportPct     = document.getElementById('export-pct');
+const exportLabel   = document.getElementById('export-label');
+const encodingNote  = document.getElementById('encoding-note');
+const scrubber      = document.getElementById('scrubber');
+const timeDisplay   = document.getElementById('time-display');
+const playpauseBtn  = document.getElementById('playpause-btn');
+const resRange      = document.getElementById('res-range');
+const conRange      = document.getElementById('con-range');
+const briRange      = document.getElementById('bri-range');
+const resVal        = document.getElementById('res-val');
+const conVal        = document.getElementById('con-val');
+const briVal        = document.getElementById('bri-val');
+const charsetSel    = document.getElementById('charset-sel');
+const mirrorChk     = document.getElementById('mirror-chk');
+const invertChk     = document.getElementById('invert-chk');
 
 const CHARSETS = {
   dense:  '@#W$9I!;:,. ',
@@ -542,45 +504,44 @@ const CHARSETS = {
   binary: '10 ',
 };
 
-// ── State ──
-let mode        = 'webcam';   // 'webcam' | 'image' | 'video'
-let animId      = null;
-let webcamStream= null;
-let uploadedImage = null;     // HTMLImageElement
-let isRecording = false;
+let mode          = 'webcam';
+let animId        = null;
+let webcamStream  = null;
+let uploadedImage = null;
+let scrubbing     = false;
+let isRecording   = false;
+
+// WebM recording state
 let mediaRecorder = null;
-let recChunks   = [];
-let recCanvas   = null;
-let recCtx      = null;
-let recAnimId   = null;
-let scrubbing   = false;
+let recChunks     = [];
+let recCanvas     = null;
+let recCtx        = null;
+let recAnimId     = null;
+
+// GIF recording state
+let gifEncoder    = null;
+let gifFrameTimer = null;
+const GIF_FPS     = 10;
 
 // ── ASCII core ──
-function charFor(brightness, chars) {
-  const idx = Math.floor((brightness / 255) * (chars.length - 1));
-  return chars[idx] ?? ' ';
+function charFor(b, chars) {
+  return chars[Math.floor((b / 255) * (chars.length - 1))] ?? ' ';
 }
 
-function asciiFromSource(source) {
-  const cols    = parseInt(resRange.value);
-  const contrast= parseInt(conRange.value) / 10;
-  const bright  = parseInt(briRange.value);
-  const mirror  = mirrorChk.checked;
-  const inv     = invertChk.checked;
-  const chars   = CHARSETS[charsetSel.value] || CHARSETS.dense;
-
-  const sw = source.videoWidth  || source.naturalWidth  || source.width  || 640;
-  const sh = source.videoHeight || source.naturalHeight || source.height || 480;
-  const aspect = sw / sh;
-  const rows = Math.round((cols / aspect) * 0.5);
-
-  canvas.width  = cols;
-  canvas.height = rows;
-
+function asciiFromSource(src) {
+  const cols     = parseInt(resRange.value);
+  const contrast = parseInt(conRange.value) / 10;
+  const bright   = parseInt(briRange.value);
+  const mirror   = mirrorChk.checked;
+  const inv      = invertChk.checked;
+  const chars    = CHARSETS[charsetSel.value] || CHARSETS.dense;
+  const sw = src.videoWidth  || src.naturalWidth  || src.width  || 640;
+  const sh = src.videoHeight || src.naturalHeight || src.height || 480;
+  const rows = Math.round((cols / (sw / sh)) * 0.5);
+  canvas.width = cols; canvas.height = rows;
   if (mirror) { ctx.save(); ctx.translate(cols, 0); ctx.scale(-1, 1); }
-  ctx.drawImage(source, 0, 0, cols, rows);
+  ctx.drawImage(src, 0, 0, cols, rows);
   if (mirror) ctx.restore();
-
   const data = ctx.getImageData(0, 0, cols, rows).data;
   let result = '';
   for (let r = 0; r < rows; r++) {
@@ -597,12 +558,183 @@ function asciiFromSource(source) {
   return result;
 }
 
+// Draw current ASCII text to an offscreen canvas.
+// Always uses target.width / target.height directly — no external scale() calls.
+function paintToCanvas(target, tCtx) {
+  const W = target.width, H = target.height;
+  const fontSize = 7, lineH = fontSize * 1.15;
+  // Guarantee opaque background across the full canvas dimensions
+  tCtx.globalAlpha = 1;
+  tCtx.fillStyle = '#1a1814';
+  tCtx.fillRect(0, 0, W, H);
+  tCtx.fillStyle = '#e8e2d9';
+  tCtx.font = `${fontSize}px "DM Mono", monospace`;
+  out.textContent.split('\n').forEach((line, i) => {
+    tCtx.fillText(line, 8, 8 + (i + 1) * lineH);
+  });
+}
+
+// ── Snapshot (PNG) ──
+async function takeSnapshot() {
+  // Wait for font to be ready (critical on iOS Safari)
+  await document.fonts.ready;
+
+  // Use a 2× canvas for sharpness — set dimensions first, THEN scale
+  const SCALE = 2;
+  const W = screenEl.offsetWidth, H = screenEl.offsetHeight;
+  const snap = document.createElement('canvas');
+  snap.width  = W * SCALE;
+  snap.height = H * SCALE;
+  const sCtx = snap.getContext('2d');
+  // Scale the context so paintToCanvas draws at 2× density
+  sCtx.scale(SCALE, SCALE);
+  // Pass the logical size; paintToCanvas will fillRect the full canvas via target.width/height
+  // Override: pass the scaled canvas so fillRect uses physical dimensions
+  sCtx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+  // Fill background at full physical size first
+  sCtx.fillStyle = '#1a1814';
+  sCtx.fillRect(0, 0, snap.width, snap.height);
+  // Now draw text at 2× font size to fill the 2× canvas
+  const fontSize = 7 * SCALE, lineH = fontSize * 1.15;
+  sCtx.fillStyle = '#e8e2d9';
+  sCtx.font = `${fontSize}px "DM Mono", monospace`;
+  out.textContent.split('\n').forEach((line, i) => {
+    sCtx.fillText(line, 8 * SCALE, 8 * SCALE + (i + 1) * lineH);
+  });
+
+  screenEl.classList.add('flash');
+  setTimeout(() => screenEl.classList.remove('flash'), 300);
+
+  const dataUrl = snap.toDataURL('image/png');
+  if (IS_IOS) {
+    const w = window.open();
+    w.document.write(`<html><body style="margin:0;background:#1a1814">
+      <img src="${dataUrl}" style="max-width:100%;display:block">
+      <p style="font-family:monospace;font-size:11px;padding:10px;color:#666;text-align:center">
+        Long-press image → Save to Photos
+      </p></body></html>`);
+  } else {
+    const link = document.createElement('a');
+    link.download = `asciicam-${Date.now()}.png`;
+    link.href = dataUrl;
+    link.click();
+  }
+}
+
+// ── WebM recording ──
+function startWebmRecording() {
+  const W = screenEl.offsetWidth || 640, H = screenEl.offsetHeight || 360;
+  recCanvas = document.createElement('canvas');
+  recCanvas.width = W; recCanvas.height = H;
+  recCtx = recCanvas.getContext('2d');
+  function drawFrame() { paintToCanvas(recCanvas, recCtx); recAnimId = requestAnimationFrame(drawFrame); }
+  drawFrame();
+  const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+  mediaRecorder = new MediaRecorder(recCanvas.captureStream(24), { mimeType: mime });
+  recChunks = [];
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recChunks.push(e.data); };
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recChunks, { type: mime });
+    const link = document.createElement('a');
+    link.download = `asciicam-${Date.now()}.webm`;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+  mediaRecorder.start();
+}
+
+function stopWebmRecording() {
+  cancelAnimationFrame(recAnimId);
+  if (mediaRecorder?.state !== 'inactive') mediaRecorder.stop();
+}
+
+// ── GIF recording ──
+function startGifRecording() {
+  const W = screenEl.offsetWidth || 360, H = screenEl.offsetHeight || 240;
+  gifEncoder = new GIF({
+    workers: 2, quality: 12,
+    width: W, height: H,
+    workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js',
+  });
+  const frameCanvas = document.createElement('canvas');
+  frameCanvas.width = W; frameCanvas.height = H;
+  const fCtx = frameCanvas.getContext('2d');
+  const delay = Math.round(1000 / GIF_FPS);
+  // Wait for font before capturing any frames
+  document.fonts.ready.then(() => {
+    function captureFrame() {
+      paintToCanvas(frameCanvas, fCtx);
+      gifEncoder.addFrame(fCtx, { copy: true, delay });
+      gifFrameTimer = setTimeout(captureFrame, delay);
+    }
+    captureFrame();
+  });
+}
+
+function stopGifRecording() {
+  clearTimeout(gifFrameTimer);
+  const btn = document.getElementById('rec-btn');
+  exportProgress.style.display = 'flex';
+  exportLabel.textContent = 'Encoding GIF';
+  encodingNote.style.display = 'block';
+  progressFill.style.width = '0%';
+  exportPct.textContent = '0%';
+  if (btn) { btn.disabled = true; btn.textContent = 'Encoding…'; btn.classList.remove('recording'); }
+
+  gifEncoder.on('progress', p => {
+    const pct = Math.round(p * 100);
+    progressFill.style.width = pct + '%';
+    exportPct.textContent = pct + '%';
+  });
+  gifEncoder.on('finished', blob => {
+    exportProgress.style.display = 'none';
+    encodingNote.style.display = 'none';
+    const url = URL.createObjectURL(blob);
+    if (IS_IOS) {
+      const w = window.open();
+      w.document.write(`<html><body style="margin:0;background:#111">
+        <img src="${url}" style="max-width:100%;display:block">
+        <p style="font-family:monospace;font-size:11px;padding:10px;color:#666;text-align:center">
+          Long-press image → Save to Photos
+        </p></body></html>`);
+    } else {
+      const link = document.createElement('a');
+      link.download = `asciicam-${Date.now()}.gif`;
+      link.href = url; link.click();
+      URL.revokeObjectURL(url);
+    }
+    if (btn) { btn.disabled = false; btn.textContent = 'Record GIF'; }
+  });
+  gifEncoder.render();
+}
+
+// ── Unified record toggle ──
+function startRecording() {
+  isRecording = true;
+  const btn = document.getElementById('rec-btn');
+  btn.textContent = 'Stop rec'; btn.classList.add('recording');
+  if (CAN_MEDIARECORDER) startWebmRecording(); else startGifRecording();
+}
+
+function stopRecording() {
+  isRecording = false;
+  if (CAN_MEDIARECORDER) {
+    stopWebmRecording();
+    const btn = document.getElementById('rec-btn');
+    if (btn) { btn.textContent = 'Record'; btn.classList.remove('recording'); }
+  } else {
+    stopGifRecording();
+  }
+}
+
 // ── Webcam mode ──
 function buildWebcamControls() {
   mirrorChk.checked = true;
+  const recLabel = CAN_MEDIARECORDER ? 'Record' : 'Record GIF';
   controlsRight.innerHTML = `
     <button class="btn secondary" id="snap-btn">Photo</button>
-    <button class="btn secondary" id="rec-btn">Record</button>
+    <button class="btn secondary" id="rec-btn">${recLabel}</button>
     <button class="btn danger" id="stop-btn">Stop</button>`;
   document.getElementById('snap-btn').addEventListener('click', takeSnapshot);
   document.getElementById('rec-btn').addEventListener('click', () => isRecording ? stopRecording() : startRecording());
@@ -611,7 +743,8 @@ function buildWebcamControls() {
 
 async function startWebcam() {
   try {
-    webcamStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    const constraints = { video: { facingMode: 'user' }, audio: false };
+    webcamStream = await navigator.mediaDevices.getUserMedia(constraints);
     webcamVideo.srcObject = webcamStream;
     await webcamVideo.play();
     showScreen();
@@ -619,7 +752,7 @@ async function startWebcam() {
     dot.classList.add('live');
     statusLabel.textContent = 'live';
     function loop() {
-      out.textContent = asciiFromSource(webcamVideo);
+      if (webcamVideo.readyState >= 2) out.textContent = asciiFromSource(webcamVideo);
       animId = requestAnimationFrame(loop);
     }
     loop();
@@ -640,36 +773,32 @@ function stopWebcam() {
 // ── Upload mode ──
 function buildUploadControls(isVideo) {
   mirrorChk.checked = false;
-  const saveLabel = isVideo ? 'Export video' : 'Save PNG';
+  const exportBtnLabel = isVideo ? (CAN_MEDIARECORDER ? 'Export WebM' : 'Export GIF') : 'Save PNG';
+  const exportId = isVideo ? 'export-video-btn' : 'snap-btn';
   controlsRight.innerHTML = `
     <button class="btn secondary" id="new-upload-btn">New file</button>
-    ${isVideo ? '' : '<button class="btn secondary" id="snap-btn">Save PNG</button>'}
-    ${isVideo ? `<button class="btn" id="export-video-btn">${saveLabel}</button>` : ''}`;
+    <button class="btn ${isVideo ? '' : 'secondary'}" id="${exportId}">${exportBtnLabel}</button>`;
   document.getElementById('new-upload-btn').addEventListener('click', resetUpload);
   if (!isVideo) document.getElementById('snap-btn').addEventListener('click', takeSnapshot);
-  if (isVideo)  document.getElementById('export-video-btn').addEventListener('click', exportVideo);
+  if (isVideo)  document.getElementById('export-video-btn').addEventListener('click',
+    CAN_MEDIARECORDER ? exportVideoWebm : exportVideoGif);
 }
 
 function handleFile(file) {
   if (!file) return;
   const isVideo = file.type.startsWith('video/');
   const isImage = file.type.startsWith('image/');
-  if (!isVideo && !isImage) { alert('Please upload an image or video file.'); return; }
-
+  if (!isVideo && !isImage) { alert('Please choose an image or video file.'); return; }
   const url = URL.createObjectURL(file);
 
   if (isImage) {
     const img = new Image();
     img.onload = () => {
       uploadedImage = img;
-      showScreen();
-      buildUploadControls(false);
+      showScreen(); buildUploadControls(false);
       videoControls.style.display = 'none';
       cancelAnimationFrame(animId);
-      function loop() {
-        out.textContent = asciiFromSource(uploadedImage);
-        animId = requestAnimationFrame(loop);
-      }
+      function loop() { out.textContent = asciiFromSource(uploadedImage); animId = requestAnimationFrame(loop); }
       loop();
       statusLabel.textContent = 'image';
     };
@@ -677,19 +806,15 @@ function handleFile(file) {
   } else {
     uploadVideo.src = url;
     uploadVideo.onloadedmetadata = () => {
-      showScreen();
-      buildUploadControls(true);
+      showScreen(); buildUploadControls(true);
       videoControls.style.display = 'flex';
-      scrubber.max = 1000;
-      uploadVideo.play();
-      playpauseBtn.textContent = 'Pause';
+      uploadVideo.play(); playpauseBtn.textContent = 'Pause';
       statusLabel.textContent = 'video';
       cancelAnimationFrame(animId);
       function loop() {
         if (!uploadVideo.paused && !uploadVideo.ended) {
           out.textContent = asciiFromSource(uploadVideo);
-          const pct = uploadVideo.currentTime / uploadVideo.duration;
-          if (!scrubbing) scrubber.value = Math.round(pct * 1000);
+          if (!scrubbing) scrubber.value = Math.round((uploadVideo.currentTime / uploadVideo.duration) * 1000);
           timeDisplay.textContent = fmt(uploadVideo.currentTime) + ' / ' + fmt(uploadVideo.duration);
         }
         animId = requestAnimationFrame(loop);
@@ -701,32 +826,126 @@ function handleFile(file) {
 
 function resetUpload() {
   cancelAnimationFrame(animId);
-  uploadVideo.pause();
-  uploadVideo.src = '';
-  uploadedImage = null;
+  uploadVideo.pause(); uploadVideo.src = ''; uploadedImage = null;
   videoControls.style.display = 'none';
   exportProgress.style.display = 'none';
-  hideScreen();
-  uploadZone.style.display = 'flex';
-  buildUploadControls(false); // reset buttons
-  controlsEl.style.display = 'none';
-  // re-show upload zone properly
   out.style.display = 'none';
   uploadZone.style.display = 'flex';
   webcamPh.style.display = 'none';
+  controlsEl.style.display = 'none';
   statusLabel.textContent = 'offline';
 }
 
 function showScreen() {
-  webcamPh.style.display = 'none';
-  uploadZone.style.display = 'none';
-  out.style.display = 'block';
-  controlsEl.style.display = 'flex';
+  webcamPh.style.display = 'none'; uploadZone.style.display = 'none';
+  out.style.display = 'block'; controlsEl.style.display = 'flex';
+}
+function hideScreen() { out.style.display = 'none'; controlsEl.style.display = 'none'; }
+
+// ── Video export: WebM ──
+async function exportVideoWebm() {
+  const duration = uploadVideo.duration;
+  if (!duration || isNaN(duration)) return;
+  uploadVideo.pause(); playpauseBtn.textContent = 'Play';
+  const W = screenEl.offsetWidth || 640, H = screenEl.offsetHeight || 360;
+  const offscreen = document.createElement('canvas');
+  offscreen.width = W; offscreen.height = H;
+  const offCtx = offscreen.getContext('2d');
+  const fps = 24;
+  const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+  const recorder = new MediaRecorder(offscreen.captureStream(fps), { mimeType: mime });
+  const chunks = []; recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  exportProgress.style.display = 'flex'; exportLabel.textContent = 'Exporting WebM';
+  encodingNote.style.display = 'none';
+  document.getElementById('export-video-btn').disabled = true;
+  recorder.start();
+  const totalFrames = Math.floor(duration * fps); let framesDone = 0, t = 0;
+  while (t <= duration) {
+    await new Promise(resolve => {
+      uploadVideo.currentTime = t;
+      uploadVideo.onseeked = () => {
+        out.textContent = asciiFromSource(uploadVideo);
+        paintToCanvas(offscreen, offCtx);
+        framesDone++;
+        const pct = Math.round((framesDone / totalFrames) * 100);
+        progressFill.style.width = pct + '%'; exportPct.textContent = pct + '%';
+        resolve();
+      };
+    });
+    t += 1 / fps;
+    await new Promise(r => setTimeout(r, 0));
+  }
+  recorder.stop();
+  await new Promise(r => recorder.onstop = r);
+  const blob = new Blob(chunks, { type: mime });
+  const link = document.createElement('a');
+  link.download = `asciicam-export-${Date.now()}.webm`;
+  link.href = URL.createObjectURL(blob); link.click();
+  URL.revokeObjectURL(link.href);
+  exportProgress.style.display = 'none'; progressFill.style.width = '0%';
+  document.getElementById('export-video-btn').disabled = false;
+  uploadVideo.currentTime = 0;
 }
 
-function hideScreen() {
-  out.style.display = 'none';
-  controlsEl.style.display = 'none';
+// ── Video export: GIF (iOS) ──
+async function exportVideoGif() {
+  const duration = uploadVideo.duration;
+  if (!duration || isNaN(duration)) return;
+  uploadVideo.pause(); playpauseBtn.textContent = 'Play';
+  const W = screenEl.offsetWidth || 360, H = screenEl.offsetHeight || 240;
+  const frameCanvas = document.createElement('canvas');
+  frameCanvas.width = W; frameCanvas.height = H;
+  const fCtx = frameCanvas.getContext('2d');
+  const fps = GIF_FPS, delay = Math.round(1000 / fps);
+  const encoder = new GIF({
+    workers: 2, quality: 12, width: W, height: H,
+    workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js',
+  });
+  exportProgress.style.display = 'flex';
+  exportLabel.textContent = 'Rendering frames';
+  encodingNote.style.display = 'none';
+  document.getElementById('export-video-btn').disabled = true;
+  const totalFrames = Math.floor(duration * fps); let framesDone = 0, t = 0;
+  while (t <= duration) {
+    await new Promise(resolve => {
+      uploadVideo.currentTime = t;
+      uploadVideo.onseeked = () => {
+        out.textContent = asciiFromSource(uploadVideo);
+        paintToCanvas(frameCanvas, fCtx);
+        encoder.addFrame(fCtx, { copy: true, delay });
+        framesDone++;
+        const pct = Math.round((framesDone / totalFrames) * 50);
+        progressFill.style.width = pct + '%'; exportPct.textContent = pct + '%';
+        resolve();
+      };
+    });
+    t += 1 / fps;
+    await new Promise(r => setTimeout(r, 0));
+  }
+  exportLabel.textContent = 'Encoding GIF'; encodingNote.style.display = 'block';
+  encoder.on('progress', p => {
+    const pct = 50 + Math.round(p * 50);
+    progressFill.style.width = pct + '%'; exportPct.textContent = pct + '%';
+  });
+  encoder.on('finished', blob => {
+    exportProgress.style.display = 'none'; encodingNote.style.display = 'none';
+    const url = URL.createObjectURL(blob);
+    if (IS_IOS) {
+      const w = window.open();
+      w.document.write(`<html><body style="margin:0;background:#111">
+        <img src="${url}" style="max-width:100%;display:block">
+        <p style="font-family:monospace;font-size:11px;padding:10px;color:#666;text-align:center">
+          Long-press image → Save to Photos
+        </p></body></html>`);
+    } else {
+      const link = document.createElement('a');
+      link.download = `asciicam-export-${Date.now()}.gif`;
+      link.href = url; link.click(); URL.revokeObjectURL(url);
+    }
+    document.getElementById('export-video-btn').disabled = false;
+    uploadVideo.currentTime = 0;
+  });
+  encoder.render();
 }
 
 // ── Playback controls ──
@@ -735,215 +954,53 @@ playpauseBtn.addEventListener('click', () => {
   else { uploadVideo.pause(); playpauseBtn.textContent = 'Play'; }
 });
 uploadVideo.addEventListener('ended', () => { playpauseBtn.textContent = 'Play'; });
-scrubber.addEventListener('mousedown', () => scrubbing = true);
-scrubber.addEventListener('input', () => {
-  uploadVideo.currentTime = (scrubber.value / 1000) * uploadVideo.duration;
-});
-scrubber.addEventListener('mouseup', () => scrubbing = false);
-
-function fmt(s) {
-  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
-  return m + ':' + String(sec).padStart(2, '0');
-}
-
-// ── Snapshot ──
-async function takeSnapshot() {
-  try {
-    const captured = await html2canvas(out, {
-      backgroundColor: getComputedStyle(screen).backgroundColor,
-      scale: 2, logging: false,
-    });
-    screen.classList.add('flash');
-    setTimeout(() => screen.classList.remove('flash'), 300);
-    const link = document.createElement('a');
-    link.download = `asciicam-${Date.now()}.png`;
-    link.href = captured.toDataURL('image/png');
-    link.click();
-  } catch(e) { alert('Snapshot failed: ' + e.message); }
-}
-
-// ── Webcam recording ──
-function startRecording() {
-  const W = screen.offsetWidth || 800, H = screen.offsetHeight || 400;
-  recCanvas = document.createElement('canvas');
-  recCanvas.width = W; recCanvas.height = H;
-  recCtx = recCanvas.getContext('2d');
-  const fontSize = 7, lineH = fontSize * 1.15, padX = 10, padY = 10;
-  recCtx.font = `${fontSize}px "DM Mono", monospace`;
-
-  function drawFrame() {
-    recCtx.fillStyle = '#1a1814'; recCtx.fillRect(0, 0, W, H);
-    recCtx.fillStyle = '#e8e2d9';
-    out.textContent.split('\n').forEach((line, i) => {
-      recCtx.fillText(line, padX, padY + (i + 1) * lineH);
-    });
-    recAnimId = requestAnimationFrame(drawFrame);
-  }
-  drawFrame();
-
-  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
-    ? 'video/webm;codecs=vp9' : 'video/webm';
-  mediaRecorder = new MediaRecorder(recCanvas.captureStream(24), { mimeType });
-  recChunks = [];
-  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recChunks.push(e.data); };
-  mediaRecorder.onstop = () => {
-    const blob = new Blob(recChunks, { type: mimeType });
-    const link = document.createElement('a');
-    link.download = `asciicam-${Date.now()}.webm`;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-    URL.revokeObjectURL(link.href);
-  };
-  mediaRecorder.start();
-  isRecording = true;
-  document.getElementById('rec-btn').textContent = 'Stop rec';
-  document.getElementById('rec-btn').classList.add('recording');
-}
-
-function stopRecording() {
-  cancelAnimationFrame(recAnimId);
-  if (mediaRecorder?.state !== 'inactive') mediaRecorder.stop();
-  isRecording = false;
-  const btn = document.getElementById('rec-btn');
-  if (btn) { btn.textContent = 'Record'; btn.classList.remove('recording'); }
-}
-
-// ── Video export (offline render) ──
-async function exportVideo() {
-  const duration = uploadVideo.duration;
-  if (!duration || isNaN(duration)) return;
-
-  const wasPlaying = !uploadVideo.paused;
-  uploadVideo.pause();
-  playpauseBtn.textContent = 'Play';
-
-  // Offscreen render canvas
-  const W = screen.offsetWidth || 800, H = screen.offsetHeight || 400;
-  const offscreen = document.createElement('canvas');
-  offscreen.width = W; offscreen.height = H;
-  const offCtx = offscreen.getContext('2d');
-  const fontSize = 7, lineH = fontSize * 1.15, padX = 10, padY = 10;
-  offCtx.font = `${fontSize}px "DM Mono", monospace`;
-
-  const fps = 24;
-  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
-    ? 'video/webm;codecs=vp9' : 'video/webm';
-  const recorder = new MediaRecorder(offscreen.captureStream(fps), { mimeType });
-  const chunks = [];
-  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-
-  exportProgress.style.display = 'flex';
-  document.getElementById('export-video-btn').disabled = true;
-
-  recorder.start();
-  const frameInterval = 1 / fps;
-  let t = 0;
-  const totalFrames = Math.floor(duration * fps);
-  let framesDone = 0;
-
-  function renderNextFrame() {
-    return new Promise(resolve => {
-      uploadVideo.currentTime = t;
-      uploadVideo.onseeked = () => {
-        // Draw ASCII onto offscreen canvas
-        offCtx.fillStyle = '#1a1814'; offCtx.fillRect(0, 0, W, H);
-        offCtx.fillStyle = '#e8e2d9';
-        const text = asciiFromSource(uploadVideo);
-        text.split('\n').forEach((line, i) => {
-          offCtx.fillText(line, padX, padY + (i + 1) * lineH);
-        });
-        framesDone++;
-        const pct = Math.round((framesDone / totalFrames) * 100);
-        progressFill.style.width = pct + '%';
-        exportPct.textContent = pct + '%';
-        resolve();
-      };
-    });
-  }
-
-  while (t <= duration) {
-    await renderNextFrame();
-    t += frameInterval;
-    // Yield to browser
-    await new Promise(r => setTimeout(r, 0));
-  }
-
-  recorder.stop();
-  await new Promise(r => recorder.onstop = r);
-
-  const blob = new Blob(chunks, { type: mimeType });
-  const link = document.createElement('a');
-  link.download = `asciicam-export-${Date.now()}.webm`;
-  link.href = URL.createObjectURL(blob);
-  link.click();
-  URL.revokeObjectURL(link.href);
-
-  exportProgress.style.display = 'none';
-  progressFill.style.width = '0%';
-  document.getElementById('export-video-btn').disabled = false;
-  uploadVideo.currentTime = 0;
-}
+scrubber.addEventListener('touchstart', () => scrubbing = true, { passive: true });
+scrubber.addEventListener('mousedown',  () => scrubbing = true);
+scrubber.addEventListener('input', () => { uploadVideo.currentTime = (scrubber.value / 1000) * uploadVideo.duration; });
+scrubber.addEventListener('touchend', () => scrubbing = false);
+scrubber.addEventListener('mouseup',   () => scrubbing = false);
+function fmt(s) { const m = Math.floor(s/60), sec = Math.floor(s%60); return m+':'+String(sec).padStart(2,'0'); }
 
 // ── Tab switching ──
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     const newMode = tab.dataset.mode;
     if (newMode === mode) return;
-    // Tear down current mode
     if (webcamStream) stopWebcam();
+    if (isRecording) stopRecording();
     cancelAnimationFrame(animId);
-    uploadVideo.pause(); uploadVideo.src = '';
-    uploadedImage = null;
-    videoControls.style.display = 'none';
-    exportProgress.style.display = 'none';
-    hideScreen();
-    out.textContent = '';
+    uploadVideo.pause(); uploadVideo.src = ''; uploadedImage = null;
+    videoControls.style.display = 'none'; exportProgress.style.display = 'none';
+    hideScreen(); out.textContent = '';
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     mode = newMode;
-    if (mode === 'webcam') {
-      webcamPh.style.display = 'flex';
-      uploadZone.style.display = 'none';
-      statusLabel.textContent = 'offline';
-    } else {
-      webcamPh.style.display = 'none';
-      uploadZone.style.display = 'flex';
-      statusLabel.textContent = 'offline';
-    }
+    if (mode === 'webcam') { webcamPh.style.display = 'flex'; uploadZone.style.display = 'none'; }
+    else                   { webcamPh.style.display = 'none'; uploadZone.style.display = 'flex'; }
+    statusLabel.textContent = 'offline';
   });
 });
 
 // ── File input / drag & drop ──
-document.getElementById('browse-btn').addEventListener('click', () => {
-  document.getElementById('file-input').click();
-});
-document.getElementById('file-input').addEventListener('change', e => {
-  handleFile(e.target.files[0]);
-});
+document.getElementById('browse-btn').addEventListener('click', () => document.getElementById('file-input').click());
+document.getElementById('file-input').addEventListener('change', e => handleFile(e.target.files[0]));
+uploadZone.addEventListener('click', e => { if (e.target === uploadZone) document.getElementById('file-input').click(); });
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-uploadZone.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadZone.classList.remove('drag-over');
-  handleFile(e.dataTransfer.files[0]);
-});
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
 
 // ── Range labels ──
 resRange.addEventListener('input', () => resVal.textContent = resRange.value);
 conRange.addEventListener('input', () => conVal.textContent = (parseInt(conRange.value)/10).toFixed(1));
 briRange.addEventListener('input', () => briVal.textContent = briRange.value);
 
-// ── Webcam start button ──
+// ── Webcam start ──
 document.getElementById('start-btn-big').addEventListener('click', startWebcam);
 
-// Re-render still image when controls change (upload image mode)
+// ── Re-render on control change (image mode) ──
 [resRange, conRange, briRange, charsetSel, mirrorChk, invertChk].forEach(el => {
-  el.addEventListener('input', () => {
-    if (uploadedImage) out.textContent = asciiFromSource(uploadedImage);
-  });
-  el.addEventListener('change', () => {
-    if (uploadedImage) out.textContent = asciiFromSource(uploadedImage);
-  });
+  el.addEventListener('input',  () => { if (uploadedImage) out.textContent = asciiFromSource(uploadedImage); });
+  el.addEventListener('change', () => { if (uploadedImage) out.textContent = asciiFromSource(uploadedImage); });
 });
 </script>
 </body>
