@@ -576,25 +576,24 @@ function paintToCanvas(target, tCtx) {
 
 // ── Snapshot (PNG) ──
 async function takeSnapshot() {
-  // Wait for font to be ready (critical on iOS Safari)
   await document.fonts.ready;
 
-  // Use a 2× canvas for sharpness — set dimensions first, THEN scale
+  // Measure the actual ASCII output element, not the full screen container
+  const rect = out.getBoundingClientRect();
+  const W = Math.ceil(rect.width);
+  const H = Math.ceil(rect.height);
   const SCALE = 2;
-  const W = screenEl.offsetWidth, H = screenEl.offsetHeight;
+
   const snap = document.createElement('canvas');
   snap.width  = W * SCALE;
   snap.height = H * SCALE;
   const sCtx = snap.getContext('2d');
-  // Scale the context so paintToCanvas draws at 2× density
-  sCtx.scale(SCALE, SCALE);
-  // Pass the logical size; paintToCanvas will fillRect the full canvas via target.width/height
-  // Override: pass the scaled canvas so fillRect uses physical dimensions
-  sCtx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
-  // Fill background at full physical size first
+
+  // Fill background at full physical size
   sCtx.fillStyle = '#1a1814';
   sCtx.fillRect(0, 0, snap.width, snap.height);
-  // Now draw text at 2× font size to fill the 2× canvas
+
+  // Draw text at 2× font size
   const fontSize = 7 * SCALE, lineH = fontSize * 1.15;
   sCtx.fillStyle = '#e8e2d9';
   sCtx.font = `${fontSize}px "DM Mono", monospace`;
